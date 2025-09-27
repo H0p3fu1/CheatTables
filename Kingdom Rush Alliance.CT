@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>1</ID>
+      <Description>"初始化"</Description>
+      <Options moHideChildren="1"/>
+      <VariableType>Auto Assembler Script</VariableType>
+      <AssemblerScript>{ Game   : Kingdom Rush Alliance.exe
+  Version: 
+  Date   : 2024-08-04
+  Author : Administrator
+
+  This script does blah blah blah
+}
+
+[ENABLE]
+
+aobscanmodule(INJECT,lua51.dll,48 8B 29 48 89 2C C2) // should be unique
+alloc(newmem,$1000,INJECT)
+
+alloc(newmem,$1000)
+alloc(object,16) // 动态分配内存，用于存放2个人造指针
+
+// 注册全局符号
+registersymbol(INJECT)
+registersymbol(object) // 人造指针
+
+label(code)
+label(return)
+
+label(check_is_gold)
+label(check_is_gold_END)
+label(check_is_live)
+label(check_is_live_END)
+label(restore_reg)
+
+// 注入代码段
+newmem:
+  pushfq // 保存所有标志位
+  push eax // eax 压栈保存,为后续操作腾出一个寄存器
+  mov eax,[ecx+08] // 将当前值所属的公共类型所在的地址，给 eax
+
+// 判断此值的类型是否为金钱（player_gold）
+check_is_gold:
+  cmp dword ptr [eax+10],'play' // 内存双字比较
+  jne check_is_gold_END // 如不匹配，则停止后续比较，跳到此比较的结尾
+  cmp dword ptr [eax+14],'er_g'
+  jne check_is_gold_END
+  cmp word ptr [eax+18],'ol' // 内存字比较
+  jne check_is_gold_END
+  cmp byte ptr [eax+1A],'d' // 内存字节比较
+  jne check_is_gold_END
+  cmp byte ptr [eax+1B],0 // 内存字节比较
+  jne check_is_gold_END
+  mov [object],ecx // 匹配成功，将指向此值的指针保存在申请的内存中（制作人造指针）
+check_is_gold_END:
+
+// 判断此值的类型是否为生命（lives）
+check_is_live:
+  cmp dword ptr [eax+10],'live'
+  jne check_is_live_END
+  cmp byte ptr [eax+14],'s'
+  jne check_is_live_END
+  cmp byte ptr [eax+15],0
+  jne check_is_live_END
+  mov [object+8],ecx // 将指针保存在第二个内存位置
+  // （64位系统的指针大小为 64 bit，每个内存地址大小为 8bit，则需要平移8个内存地址，8x8=64）
+check_is_live_END:
+
+// 恢复临时使用的寄存器的值
+restore_reg:
+  pop eax
+  popfq  // 还原所有标志位
+  jmp code
+
+code:
+  mov rbp,[rcx]
+  mov [rdx+rax*8],rbp
+  jmp return
+
+INJECT:
+  jmp newmem
+  nop 2
+return:
+registersymbol(INJECT)
+
+[DISABLE]
+
+INJECT:
+  db 48 8B 29 48 89 2C C2
+
+// 注销全局符号
+unregistersymbol(INJECT)
+unregistersymbol(object)
+// 释放内存
+dealloc(newmem)
+dealloc(object)
+
+{
+// ORIGINAL CODE - INJECTION POINT: lua51.dll+1CC1
+
+lua51.dll+1CA3: 23 48 08                 - and ecx,[rax+08]
+lua51.dll+1CA6: 6B C9 18                 - imul ecx,ecx,18
+lua51.dll+1CA9: 03 4D 14                 - add ecx,[rbp+14]
+lua51.dll+1CAC: 83 79 0C FB              - cmp dword ptr [rcx+0C],-05
+lua51.dll+1CB0: 75 35                    - jne lua51.dll+1CE7
+lua51.dll+1CB2: 39 41 08                 - cmp [rcx+08],eax
+lua51.dll+1CB5: 75 30                    - jne lua51.dll+1CE7
+lua51.dll+1CB7: 83 79 04 FF              - cmp dword ptr [rcx+04],-01
+lua51.dll+1CBB: 74 31                    - je lua51.dll+1CEE
+lua51.dll+1CBD: 0F B6 46 FD              - movzx eax,byte ptr [rsi-03]
+// ---------- INJECTING HERE ----------
+lua51.dll+1CC1: 48 8B 29                 - mov rbp,[rcx]
+// ---------- DONE INJECTING  ----------
+lua51.dll+1CC4: 48 89 2C C2              - mov [rdx+rax*8],rbp
+lua51.dll+1CC8: 8B 06                    - mov eax,[rsi]
+lua51.dll+1CCA: 0F B6 CC                 - movzx ecx,ah
+lua51.dll+1CCD: 0F B6 E8                 - movzx ebp,al
+lua51.dll+1CD0: 83 C6 04                 - add esi,04
+lua51.dll+1CD3: C1 E8 10                 - shr eax,10
+lua51.dll+1CD6: FF 24 EB                 - jmp qword ptr [rbx+rbp*8]
+lua51.dll+1CD9: 0F B6 46 FD              - movzx eax,byte ptr [rsi-03]
+lua51.dll+1CDD: C7 44 C2 04 FF FF FF FF  - mov [rdx+rax*8+04],FFFFFFFF
+lua51.dll+1CE5: EB E1                    - jmp lua51.dll+1CC8
+}
+</AssemblerScript>
+      <CheatEntries>
+        <CheatEntry>
+          <ID>0</ID>
+          <Description>"金钱"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Double</VariableType>
+          <Address>object+0</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Increase Value</Action>
+              <Keys>
+                <Key>112</Key>
+              </Keys>
+              <Value>50000</Value>
+              <Description>金钱+50000</Description>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+        <CheatEntry>
+          <ID>2</ID>
+          <Description>"生命"</Description>
+          <ShowAsSigned>0</ShowAsSigned>
+          <VariableType>Double</VariableType>
+          <Address>object+8</Address>
+          <Offsets>
+            <Offset>0</Offset>
+          </Offsets>
+          <Hotkeys>
+            <Hotkey>
+              <Action>Increase Value</Action>
+              <Keys>
+                <Key>113</Key>
+              </Keys>
+              <Value>2000</Value>
+              <Description>生命+2000</Description>
+              <ID>0</ID>
+            </Hotkey>
+          </Hotkeys>
+        </CheatEntry>
+      </CheatEntries>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>

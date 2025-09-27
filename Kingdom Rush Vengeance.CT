@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<CheatTable CheatEngineTableVersion="45">
+  <CheatEntries>
+    <CheatEntry>
+      <ID>3</ID>
+      <Description>"金钱"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>Kingdom Rush Vengeance.exe+0xB9ABE0</Address>
+      <Offsets>
+        <Offset>858</Offset>
+        <Offset>360</Offset>
+        <Offset>3D0</Offset>
+        <Offset>150</Offset>
+      </Offsets>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Increase Value</Action>
+          <Keys>
+            <Key>112</Key>
+          </Keys>
+          <Value>50000</Value>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+    <CheatEntry>
+      <ID>4</ID>
+      <Description>"生命"</Description>
+      <ShowAsSigned>0</ShowAsSigned>
+      <VariableType>4 Bytes</VariableType>
+      <Address>Kingdom Rush Vengeance.exe+0xB9ABE0</Address>
+      <Offsets>
+        <Offset>85C</Offset>
+        <Offset>360</Offset>
+        <Offset>3D0</Offset>
+        <Offset>150</Offset>
+      </Offsets>
+      <Hotkeys>
+        <Hotkey>
+          <Action>Increase Value</Action>
+          <Keys>
+            <Key>113</Key>
+          </Keys>
+          <Value>2000</Value>
+          <ID>0</ID>
+        </Hotkey>
+      </Hotkeys>
+    </CheatEntry>
+  </CheatEntries>
+  <UserdefinedSymbols/>
+</CheatTable>
